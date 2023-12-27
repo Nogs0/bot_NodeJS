@@ -26,9 +26,11 @@ app.post('/drivers', async (request, reply) => {
         }
     });
 
-    return reply.serialize({
-        "message": "success"
-    });
+    return reply
+        .code(201)
+        .header("Content-type", "application/json;charset=utf-8")
+        .send({
+        "message": "success"});
 })
 
 app.listen({
