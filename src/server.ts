@@ -67,19 +67,23 @@ app.post('/drivers/update', async (request, reply) => {
             phone_number: query.groupParticipant
         },
     });
+    
+    let messageToReturn = "Motorista não cadastrado!";
+    if (driver){
 
-    driver.online = query.message.toUpperCase().trim() == "ONLINE";
-
-    driver = await prisma.driver.update({
-        where: {
-            phone_number: driver.phone_number
-        },
-        data: {
-            online: driver.online
-        },
-    })
-
-    let messageToReturn = `Motorista ${driver.name} está ${driver.online ? "online 🟢" : "offline 🔴"}!`;
+        driver.online = query.message.toUpperCase().trim() == "ONLINE";
+        
+        driver = await prisma.driver.update({
+            where: {
+                phone_number: driver.phone_number
+            },
+            data: {
+                online: driver.online
+            },
+        })
+        
+        messageToReturn = `Motorista ${driver.name} está ${driver.online ? "online 🟢" : "offline 🔴"}!`;
+    }
 
     return reply
         .code(200)
@@ -95,13 +99,13 @@ app.post('/drivers/update', async (request, reply) => {
 
 app.post('/message', async (request, reply) => {
 
-    const driversOn = await prisma.driver.findMany({
+    let driversOn = await prisma.driver.findMany({
         where: {
             online: true
         }
     });
 
-    shuffle(driversOn);
+    driversOn = shuffle(driversOn);
     let messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓";
     if (driversOn.length > 0)
         messageToReturn += "\nMas, a RGS conta com motoristas preparados para lhe atender! 🚗";
