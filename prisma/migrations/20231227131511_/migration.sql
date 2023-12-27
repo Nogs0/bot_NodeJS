@@ -4,7 +4,6 @@ CREATE TABLE "Driver" (
     "name" TEXT NOT NULL,
     "phone_number" TEXT NOT NULL,
     "online" BOOLEAN NOT NULL DEFAULT false,
-    "man" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "Driver_pkey" PRIMARY KEY ("id")
 );

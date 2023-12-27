@@ -16,16 +16,14 @@ app.post('/drivers/create', async (request, reply) => {
     const createDriverSchema = z.object({
         name: z.string(),
         phone_number: z.string(),
-        man: z.boolean(),
         online: z.boolean()
     });
-    const { name, phone_number, man, online } = createDriverSchema.parse(request.body);
+    const { name, phone_number, online } = createDriverSchema.parse(request.body);
 
     await prisma.driver.create({
         data: {
             name,
             phone_number,
-            man,
             online
         }
     })
@@ -101,12 +99,8 @@ app.post('/message', async (request, reply) => {
     let messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓";
     if (driversOn.length > 0)
         messageToReturn += "\nMas, a RGS conta com motoristas preparados para lhe atender! 🚗";
-    for (let i = 0; i < driversOn.length; i++) {
-        let emoji = "🔷";
-        if (!driversOn[i].man)
-            emoji = "🟣";
-        messageToReturn += `${emoji} ${driversOn[i].name}: ${driversOn[i].phone_number}`
-    }
+    for (let i = 0; i < driversOn.length; i++) 
+        messageToReturn += `🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
 
     return reply
         .code(200)
