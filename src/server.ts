@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import fastfy from 'fastify';
-import { Dirent } from 'fs';
 import { z } from 'zod';
 
 const app = fastfy();
@@ -25,7 +24,7 @@ app.post('/drivers/create', async (request, reply) => {
         data: {
             name,
             phone_number,
-            man
+            man: true
         }
     });
 
