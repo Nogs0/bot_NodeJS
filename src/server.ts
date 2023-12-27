@@ -100,7 +100,7 @@ app.post('/message', async (request, reply) => {
     if (driversOn.length > 0)
         messageToReturn += "\nMas, a RGS conta com motoristas preparados para lhe atender! 🚗";
     for (let i = 0; i < driversOn.length; i++) 
-        messageToReturn += `🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
+        messageToReturn += `\n🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
 
     return reply
         .code(200)
