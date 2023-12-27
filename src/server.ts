@@ -36,6 +36,15 @@ app.post('/drivers/create', async (request, reply) => {
 })
 
 app.post('/drivers/update', async (request, reply) => {
+    const queryJson = z.object({
+        sender: z.string(),
+        message: z.string(),
+        isGroup: z.boolean(),
+        groupParticipant: z.string(),
+        ruleId: z.number(),
+        isTestMessage: z.boolean()
+    })
+
     const appJson = z.object(
         {
             appPackageName: z.string(),
@@ -51,28 +60,37 @@ app.post('/drivers/update', async (request, reply) => {
         }
     );
 
-    
     const { query } = appJson.parse(request.body);
 
-    const driver = await prisma.driver.findUnique({
+    let driver = await prisma.driver.findUnique({
         where: {
             phone_number: query.groupParticipant
-        }
-    })
+        },
+    });
 
     driver.online = query.message.toUpperCase().trim() == "ONLINE";
-    
-    let messageToReturn = `O motorista ${driver.name} está ${driver.online ? "online 🟢" : "offline 🔴"}!`;
-    
+
+    driver = await prisma.driver.update({
+        where: {
+            phone_number: driver.phone_number
+        },
+        data: {
+            online: driver.online
+        },
+    })
+
+    let messageToReturn = `Motorista ${driver.name} está ${driver.online ? "online 🟢" : "offline 🔴"}!`;
+
     return reply
         .code(200)
         .header("Content-type", "application/json;charset=utf-8")
-        .send({ "replies": 
-                {
-                    "message": messageToReturn
-                } 
-              }
-            );
+        .send({
+            "replies":
+            {
+                "message": messageToReturn
+            }
+        }
+        );
 })
 
 app.post('/message', async (request, reply) => {
@@ -97,12 +115,13 @@ app.post('/message', async (request, reply) => {
     return reply
         .code(200)
         .header("Content-type", "application/json;charset=utf-8")
-        .send({ "replies": 
-                {
-                    "message": messageToReturn
-                } 
-              }
-            );
+        .send({
+            "replies":
+            {
+                "message": messageToReturn
+            }
+        }
+        );
 })
 
 app.listen({
