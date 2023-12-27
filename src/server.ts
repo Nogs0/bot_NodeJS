@@ -67,12 +67,12 @@ app.post('/drivers/update', async (request, reply) => {
             phone_number: query.groupParticipant
         },
     });
-    
+
     let messageToReturn = "Motorista não cadastrado!";
-    if (driver){
+    if (driver) {
 
         driver.online = query.message.toUpperCase().trim() == "ONLINE";
-        
+
         driver = await prisma.driver.update({
             where: {
                 phone_number: driver.phone_number
@@ -81,7 +81,7 @@ app.post('/drivers/update', async (request, reply) => {
                 online: driver.online
             },
         })
-        
+
         messageToReturn = `Motorista ${driver.name} está ${driver.online ? "online 🟢" : "offline 🔴"}!`;
     }
 
@@ -89,12 +89,12 @@ app.post('/drivers/update', async (request, reply) => {
         .code(200)
         .header("Content-type", "application/json;charset=utf-8")
         .send({
-            "replies":
-            {
-                "message": messageToReturn
-            }
-        }
-        );
+            "replies": [
+                {
+                    "message": messageToReturn
+                }
+            ]
+        });
 })
 
 app.post('/message', async (request, reply) => {
@@ -118,14 +118,15 @@ app.post('/message', async (request, reply) => {
 
     return reply
         .code(200)
+        .code(200)
         .header("Content-type", "application/json;charset=utf-8")
         .send({
-            "replies":
-            {
-                "message": messageToReturn
-            }
-        }
-        );
+            "replies": [
+                {
+                    "message": messageToReturn
+                }
+            ]
+        });
 })
 
 app.listen({
