@@ -26,7 +26,9 @@ app.post('/drivers', async (request, reply) => {
         }
     });
 
-    return reply.status(201).send();
+    return reply.serialize({
+        "message": "success"
+    });
 })
 
 app.listen({
