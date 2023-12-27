@@ -15,4 +15,5 @@ model Driver {
   name String
   phone_number String
   online Boolean @default(false)
+  man Boolean
 }

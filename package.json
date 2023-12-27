@@ -11,7 +11,6 @@
     "build": "tsup src",
     "start": "node dist/server.js"
   },
-
   "author": "joao",
   "license": "MIT",
   "dependencies": {
