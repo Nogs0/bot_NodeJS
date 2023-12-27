@@ -65,7 +65,7 @@ app.post('/drivers/update', async (request, reply) => {
 
         driver = await prisma.driver.update({
             where: {
-                phone_number: driver.phone_number
+                id: driver.id
             },
             data: {
                 online: driver.online
