@@ -52,7 +52,7 @@ app.post('/drivers/update', async (request, reply) => {
 
     const { query } = appJson.parse(request.body);
 
-    let driver = await prisma.driver.findUnique({
+    let driver = await prisma.driver.findFirstOrThrow({
         where: {
             phone_number: query.groupParticipant
         },
