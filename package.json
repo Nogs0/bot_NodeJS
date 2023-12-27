@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx src/server.ts",
     "build": "tsup src",
-    "start": "node dist/serve.js"
+    "start": "node dist/server.js"
   },
 
   "author": "joao",
