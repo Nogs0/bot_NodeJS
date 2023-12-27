@@ -16,18 +16,19 @@ app.post('/drivers/create', async (request, reply) => {
     const createDriverSchema = z.object({
         name: z.string(),
         phone_number: z.string(),
-        man: z.boolean()
+        man: z.boolean(),
+        online: z.boolean()
     });
-    const { name, phone_number, man } = createDriverSchema.parse(request.body);
+    const { name, phone_number, man, online } = createDriverSchema.parse(request.body);
 
     await prisma.driver.create({
         data: {
             name,
             phone_number,
-            man: true
+            man,
+            online
         }
-    });
-
+    })
     return reply
         .code(201)
         .header("Content-type", "application/json;charset=utf-8")
