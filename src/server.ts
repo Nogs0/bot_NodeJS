@@ -36,14 +36,6 @@ app.post('/drivers/create', async (request, reply) => {
 })
 
 app.post('/drivers/update', async (request, reply) => {
-    const queryJson = z.object({
-        sender: z.string(),
-        message: z.string(),
-        isGroup: z.boolean(),
-        groupParticipant: z.string(),
-        ruleId: z.number(),
-        isTestMessage: z.boolean()
-    })
 
     const appJson = z.object(
         {
