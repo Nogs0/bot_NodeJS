@@ -96,14 +96,13 @@ app.post('/message', async (request, reply) => {
     });
 
     driversOn = shuffle(driversOn);
-    let messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓";
+    let messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓\nSe for agendamento, respondo em alguns minutos!😃";
     if (driversOn.length > 0)
-        messageToReturn += "\nMas, a RGS conta com motoristas preparados para lhe atender! 🚗";
+        messageToReturn += "\nMas, a FCN conta com motoristas preparados para lhe atender! 🚗";
     for (let i = 0; i < driversOn.length; i++) 
         messageToReturn += `\n🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
 
     return reply
-        .code(200)
         .code(200)
         .header("Content-type", "application/json;charset=utf-8")
         .send({
