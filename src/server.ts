@@ -52,7 +52,7 @@ app.post('/drivers/update', async (request, reply) => {
 
     const { query } = appJson.parse(request.body);
 
-    let driver = await prisma.driver.findFirstOrThrow({
+    let driver = await prisma.driver.findFirst({
         where: {
             phone_number: query.groupParticipant
         },
@@ -89,18 +89,30 @@ app.post('/drivers/update', async (request, reply) => {
 
 app.post('/message', async (request, reply) => {
 
-    let driversOn = await prisma.driver.findMany({
+    var phone_number = request.headers.motorista?.toString();
+
+    var driver = await prisma.driver.findFirst({
         where: {
-            online: true
+            phone_number: phone_number
         }
     });
+    
+    let messageToReturn = "";
 
-    driversOn = shuffle(driversOn);
-    let messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓\nSe for agendamento, respondo em alguns minutos!😃";
-    if (driversOn.length > 0)
-        messageToReturn += "\nMas, a FCN conta com motoristas preparados para lhe atender! 🚗";
-    for (let i = 0; i < driversOn.length; i++) 
-        messageToReturn += `\n🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
+    if (!driver || !driver.online) {
+        let driversOn = await prisma.driver.findMany({
+            where: {
+                online: true
+            }
+        });
+
+        driversOn = shuffle(driversOn);
+        messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓\nSe for agendamento, respondo em alguns minutos!😃";
+        if (driversOn.length > 0)
+            messageToReturn += "\nMas, a FCN conta com motoristas preparados para lhe atender! 🚗";
+        for (let i = 0; i < driversOn.length; i++)
+            messageToReturn += `\n🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
+    }
 
     return reply
         .code(200)
