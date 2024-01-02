@@ -59,9 +59,14 @@ app.post('/drivers/update', async (request, reply) => {
     });
 
     let messageToReturn = "Motorista não cadastrado!";
+    
     if (driver) {
-
-        driver.online = query.message.toUpperCase().trim() == "ONLINE";
+        let status = query.message.toUpperCase().trim();
+        if (status == "ONLINE" || status == "ON")
+            driver.online = true;
+        else if (status == "OFFLINE" || status == "OFF")
+            driver.online = false;
+        else return;
 
         driver = await prisma.driver.update({
             where: {
