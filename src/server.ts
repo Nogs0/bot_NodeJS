@@ -114,7 +114,7 @@ app.post('/message', async (request, reply) => {
         driversOn = shuffle(driversOn);
         messageToReturn = "Olá, tudo bem? Espero que sim!\nEstou indisponível no momento! 😓\nSe for agendamento, respondo em alguns minutos!😃";
         if (driversOn.length > 0)
-            messageToReturn += "\nMas, a FCN conta com motoristas preparados para lhe atender! 🚗";
+            messageToReturn += "\nMas, a FNC conta com motoristas preparados para lhe atender! 🚗";
         for (let i = 0; i < driversOn.length; i++)
             messageToReturn += `\n🔷 ${driversOn[i].name}: ${driversOn[i].phone_number}`
     }
