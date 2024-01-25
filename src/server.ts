@@ -102,7 +102,7 @@ app.post('/message', async (request, reply) => {
         }
     });
     
-    let messageToReturn = "Olá, tudo bem? Espero que sim!";
+    let messageToReturn = "";
 
     if (!driver || !driver.online) {
         let driversOn = await prisma.driver.findMany({
