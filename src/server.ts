@@ -3,34 +3,36 @@ import fastfy from 'fastify';
 import { z } from 'zod';
 
 const app = fastfy();
-
 const prisma = new PrismaClient();
 
-app.get('/drivers', async () => {
-    const drivers = await prisma.driver.findMany();
+const GroupController = require('./controllers/group-controller');
+const DriverController = require('./controllers/driver-controller');
 
-    return { drivers };
+app.get('/groups', async (request, reply) => await GroupController.getAll(request, reply));
+
+app.post('/groups/create', async (request, reply) => await GroupController.create(request, reply));
+
+app.get('/drivers', async (request, reply) => {
+    let drivers = await DriverController.getAll();
+
+    return reply.code(200)
+        .header("Content-type", "application/json;charset=utf-8")
+        .send({ drivers });
 })
 
 app.post('/drivers/create', async (request, reply) => {
     const createDriverSchema = z.object({
         name: z.string(),
-        phone_number: z.string(),
-        online: z.boolean()
+        phone_number: z.string()
     });
-    const { name, phone_number, online } = createDriverSchema.parse(request.body);
+    const { name, phone_number } = createDriverSchema.parse(request.body);
 
-    await prisma.driver.create({
-        data: {
-            name,
-            phone_number,
-            online
-        }
-    })
+    let driver = await DriverController.create(name, phone_number);
+
     return reply
         .code(201)
         .header("Content-type", "application/json;charset=utf-8")
-        .send({ "message": "success" });
+        .send({ "message": `Driver ${driver.name} created!` });
 })
 
 app.post('/drivers/update', async (request, reply) => {
@@ -59,7 +61,7 @@ app.post('/drivers/update', async (request, reply) => {
     });
 
     let messageToReturn = "Motorista não cadastrado!";
-    
+
     if (driver) {
         let status = query.message.toUpperCase().trim();
         if (status == "ONLINE" || status == "ON")
@@ -94,14 +96,14 @@ app.post('/drivers/update', async (request, reply) => {
 
 app.post('/message', async (request, reply) => {
 
-    var phone_number = request.headers.motorista?.toString();
+    let phone_number = request.headers.motorista?.toString();
 
-    var driver = await prisma.driver.findFirst({
+    let driver = await prisma.driver.findFirst({
         where: {
             phone_number: phone_number
         }
     });
-    
+
     let messageToReturn = "";
 
     if (!driver || !driver.online) {
@@ -128,6 +130,45 @@ app.post('/message', async (request, reply) => {
                     "message": messageToReturn
                 }
             ]
+        });
+})
+
+app.put('/changeStatus', async (request, reply) => {
+    const query = z.object(
+        {
+            phone_number: z.string(),
+            status: z.boolean()
+        }
+    );
+
+    const { phone_number, status } = query.parse(request.body);
+
+    let driver = await prisma.driver.findFirst({
+        where: {
+            phone_number: phone_number
+        }
+    });
+
+    if (driver) {
+        driver = await prisma.driver.update({
+            where: {
+                id: driver.id
+            },
+            data: {
+                status: status
+            },
+        })
+
+        return reply.code(200)
+            .header("Content-type", "application/json;charset=utf-8")
+            .send({
+                "message": `${driver.name} is ${driver.status ? "active" : "inactive"}`
+            });
+    }
+    else return reply.code(200)
+        .header("Content-type", "application/json;charset=utf-8")
+        .send({
+            "message": `Driver not found`
         });
 })
 
