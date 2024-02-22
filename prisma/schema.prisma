@@ -11,6 +11,7 @@ model Group {
   id     Int     @id @default(autoincrement())
   name   String
   status Boolean @default(true)
+  drivers Driver[]
 }
 
 model Driver {
@@ -19,4 +20,6 @@ model Driver {
   phone_number String  @unique
   online       Boolean @default(false)
   status       Boolean @default(true)
+  group_id     Int?
+  group        Group? @relation(fields: [group_id], references: [id])
 }

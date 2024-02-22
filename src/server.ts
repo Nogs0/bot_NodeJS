@@ -12,6 +12,8 @@ app.get('/groups', async (request, reply) => await GroupController.getAll(reques
 
 app.post('/groups/create', async (request, reply) => await GroupController.create(request, reply));
 
+app.post('/groups/update', async (request, reply) => await GroupController.update(request, reply));
+
 app.get('/drivers', async (request, reply) => {
     let drivers = await DriverController.getAll();
 
