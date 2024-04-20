@@ -30,7 +30,7 @@ exports.update = async (request: any, reply: any) => {
             appPackageName: z.string(),
             messengerPackageName: z.string(),
             query: z.object({
-                sender: z.string(),
+                sender: z.string().nullable(),
                 message: z.string(),
                 isGroup: z.boolean(),
                 groupParticipant: z.string(),
