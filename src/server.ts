@@ -33,7 +33,11 @@ app.post('/message', async (request, reply) => {
     if (!driver || !driver.online) {
         let driversOn = await prisma.driver.findMany({
             where: {
-                online: true
+                AND: {
+                    online: true,
+                    status: true    
+                }
+                
             }
         });
 
